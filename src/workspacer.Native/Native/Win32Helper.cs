@@ -32,7 +32,7 @@ namespace workspacer
 
         public static void HideWindowBorders(IntPtr hwnd)
         {
-            Win32.SetWindowLongPtr(hwnd, Win32.GWL_STYLE, (uint)Win32.WS.WS_POPUP);
+            Win32.SetWindowLongPtr(hwnd, Win32.GWL_STYLE, (uint)Win32.WS.WS_POPUPWINDOW);
         }
 
         // http://blogs.msdn.com/b/oldnewthing/archive/2007/10/08/5351207.aspx
