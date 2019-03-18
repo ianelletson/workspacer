@@ -20,6 +20,7 @@ namespace workspacer
 
         private IntPtr _handle;
         private bool _didManualHide;
+        private Win32.WS _windowStyle;
 
         public WindowFocusedDelegate WindowFocused;
 
@@ -115,6 +116,7 @@ namespace workspacer
         public bool IsMinimized => Win32.IsIconic(_handle);
         public bool IsMaximized => Win32.IsZoomed(_handle);
         public bool IsMouseMoving { get; internal set; }
+        public bool HasHiddenBorders { get; internal set; }
 
         public void Focus()
         {
@@ -134,6 +136,21 @@ namespace workspacer
                 _didManualHide = true;
             }
             Win32.ShowWindow(_handle, Win32.SW.SW_HIDE);
+        }
+
+        public void ToggleBorders()
+        {
+            Logger.Trace($"[{this}] :: ToggleBorders");
+            if (HasHiddenBorders)
+            {
+                Win32.SetWindowLongPtr(_handle, Win32.GWL_STYLE, (uint)_windowStyle);
+                HasHiddenBorders = false;
+            }
+            else
+            {
+                Win32Helper.HideWindowBorders(_handle);
+                HasHiddenBorders = true;
+            }
         }
 
         public void ShowNormal()
