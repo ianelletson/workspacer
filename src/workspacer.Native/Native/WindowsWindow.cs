@@ -33,14 +33,15 @@ namespace workspacer
 
             try
             {
-                uint processId;
-                Win32.GetWindowThreadProcessId(_handle, out processId);
+                Win32.GetWindowThreadProcessId(_handle, out var processId);
+
+                _windowStyle = Win32.GetWindowStyleLongPtr(_handle);
 
                 _processId = (int)processId;
 
                 var process = Process.GetProcesses().FirstOrDefault(p => p.Id == _processId);
-                _processName = process.ProcessName;
-                _processFileName = Path.GetFileName(process.MainModule.FileName);
+                _processName = process?.ProcessName;
+                _processFileName = Path.GetFileName(process?.MainModule.FileName);
             }
             catch (Exception)
             {
