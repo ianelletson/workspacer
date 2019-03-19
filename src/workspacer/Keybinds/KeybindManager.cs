@@ -241,6 +241,9 @@ namespace workspacer
             Subscribe(mod, Keys.OemPeriod,
                 () => _context.Workspaces.FocusedWorkspace.DecrementNumberOfPrimaryWindows(), "decrement # primary windows");
 
+            Subscribe(mod, Keys.B, 
+                () => _context.Workspaces.FocusedWorkspace.UpdateWindow(_context.Workspaces.FocusedWorkspace.FocusedWindow, WindowUpdateType.ToggleTitle));
+
             Subscribe(mod, Keys.T,
                 () => _context.Windows.ToggleFocusedWindowTiling(), "toggle tiling for focused window");
 

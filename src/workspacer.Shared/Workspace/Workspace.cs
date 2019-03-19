@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -67,6 +68,9 @@ namespace workspacer
         {
             if (type == WindowUpdateType.Foreground)
                 _lastFocused = window;
+
+            if (type == WindowUpdateType.ToggleTitle)
+                FocusedWindow.ToggleTitle();
 
             if (layout)
                 DoLayout();
