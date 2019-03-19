@@ -20,7 +20,7 @@ namespace workspacer
 
         private IntPtr _handle;
         private bool _didManualHide;
-        private Win32.WS _windowStyle;
+        private readonly Win32.WS _originalWindowStyle;
 
         public WindowFocusedDelegate WindowFocused;
 
@@ -36,7 +36,7 @@ namespace workspacer
             {
                 Win32.GetWindowThreadProcessId(_handle, out var processId);
 
-                _windowStyle = Win32.GetWindowStyleLongPtr(_handle);
+                _originalWindowStyle = Win32.GetWindowStyleLongPtr(_handle);
 
                 _processId = (int)processId;
 
@@ -116,7 +116,7 @@ namespace workspacer
         public bool IsMinimized => Win32.IsIconic(_handle);
         public bool IsMaximized => Win32.IsZoomed(_handle);
         public bool IsMouseMoving { get; internal set; }
-        public bool HasHiddenBorders { get; internal set; }
+        public bool HasTitleHidden { get; internal set; }
 
         public void Focus()
         {
@@ -138,18 +138,20 @@ namespace workspacer
             Win32.ShowWindow(_handle, Win32.SW.SW_HIDE);
         }
 
-        public void ToggleBorders()
+        public void ToggleTitle()
         {
-            Logger.Trace($"[{this}] :: ToggleBorders");
-            if (HasHiddenBorders)
+            Logger.Trace($"[{this}] :: ToggleTitle {(HasTitleHidden ? "on" : "off")}");
+            const Win32.WS titleBarStyle = Win32.WS.WS_CAPTION;
+
+            if (HasTitleHidden)
             {
-                Win32.SetWindowLongPtr(_handle, Win32.GWL_STYLE, (uint)_windowStyle);
-                HasHiddenBorders = false;
+                Win32Helper.AddStyle(_handle, titleBarStyle);
+                HasTitleHidden = false;
             }
             else
             {
-                Win32Helper.HideWindowBorders(_handle);
-                HasHiddenBorders = true;
+                Win32Helper.RemoveStyle(_handle, titleBarStyle);
+                HasTitleHidden = true;
             }
         }
 

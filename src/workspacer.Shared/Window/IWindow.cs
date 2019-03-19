@@ -24,6 +24,7 @@ namespace workspacer
         bool IsMinimized { get; }
         bool IsMaximized { get; }
         bool IsMouseMoving { get; }
+        bool HasTitleHidden { get; }
 
         void Focus();
         void Hide();
@@ -31,6 +32,7 @@ namespace workspacer
         void ShowMaximized();
         void ShowMinimized();
         void ShowInCurrentState();
+        void ToggleTitle();
 
         void BringToTop();
 
