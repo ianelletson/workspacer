@@ -30,9 +30,37 @@ namespace workspacer
                    !Win32.GetWindowStyleLongPtr(hwnd).HasFlag(Win32.WS.WS_CHILD);
         }
 
-        public static void HideWindowBorders(IntPtr hwnd)
+        public static void AddStyle(IntPtr hwnd, Win32.WS style, bool updateWindow = true)
         {
-            Win32.SetWindowLongPtr(hwnd, Win32.GWL_STYLE, (uint)Win32.WS.WS_POPUPWINDOW);
+            var currentStyle = Win32.GetWindowStyleLongPtr(hwnd);
+            var newStyle = currentStyle | style;
+            Win32.SetWindowLongPtr(hwnd, Win32.GWL_STYLE, (uint)newStyle);
+
+            if (updateWindow)
+            {
+                UpdateWindow(hwnd);
+            }
+        }
+
+        public static void RemoveStyle(IntPtr hwnd, Win32.WS style, bool updateWindow = true)
+        {
+            var currentStyle = Win32.GetWindowStyleLongPtr(hwnd);
+            var newStyle = currentStyle & ~style;
+            Win32.SetWindowLongPtr(hwnd, Win32.GWL_STYLE, (uint)newStyle);
+
+            if (updateWindow)
+            {
+                UpdateWindow(hwnd);
+            }
+        }
+
+        public static void UpdateWindow(IntPtr hwnd)
+        {
+            Win32.SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
+                    Win32.SetWindowPosFlags.IgnoreMove | Win32.SetWindowPosFlags.FrameChanged | Win32.SetWindowPosFlags.DrawFrame |
+                    Win32.SetWindowPosFlags.IgnoreResize | Win32.SetWindowPosFlags.IgnoreZOrder | Win32.SetWindowPosFlags.DoNotActivate);
+
+            Win32.InvalidateRect(hwnd, IntPtr.Zero, true);
         }
 
         // http://blogs.msdn.com/b/oldnewthing/archive/2007/10/08/5351207.aspx
