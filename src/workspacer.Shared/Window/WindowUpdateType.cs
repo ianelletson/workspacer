@@ -17,5 +17,6 @@ namespace workspacer
         MoveStart,
         MoveEnd,
         Move,
+        ToggleTitle
     }
 }

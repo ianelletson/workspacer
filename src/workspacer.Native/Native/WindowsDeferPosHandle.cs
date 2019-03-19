@@ -14,6 +14,7 @@ namespace workspacer
         private List<IWindow> _toMinimize;
         private List<IWindow> _toMaximize;
         private List<IWindow> _toNormal;
+        private List<IWindow> _toHideTitle;
 
         public WindowsDeferPosHandle(IntPtr info)
         {
@@ -21,6 +22,7 @@ namespace workspacer
             _toMinimize = new List<IWindow>();
             _toMaximize = new List<IWindow>();
             _toNormal = new List<IWindow>();
+            _toHideTitle = new List<IWindow>();
         }
 
         public void Dispose()
@@ -37,6 +39,13 @@ namespace workspacer
                 if (!w.IsMaximized)
                 {
                     Win32.ShowWindow(w.Handle, Win32.SW.SW_SHOWMAXIMIZED);
+                }
+            }
+            foreach (var w in _toHideTitle)
+            {
+                if (!w.HasTitleHidden)
+                {
+                    w.ToggleTitle();
                 }
             }
             foreach (var w in _toNormal)
@@ -60,6 +69,11 @@ namespace workspacer
             else if (location.State == WindowState.Minimized)
             {
                 _toMinimize.Add(window);
+                flags = flags | Win32.SWP.SWP_NOMOVE | Win32.SWP.SWP_NOSIZE;
+            }
+            else if (location.State == WindowState.TitleHidden)
+            {
+                _toHideTitle.Add(window);
                 flags = flags | Win32.SWP.SWP_NOMOVE | Win32.SWP.SWP_NOSIZE;
             }
             else

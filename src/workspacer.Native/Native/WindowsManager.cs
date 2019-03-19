@@ -233,7 +233,7 @@ namespace workspacer
 
         private void UpdateWindow(IntPtr handle, WindowUpdateType type)
         {
-            if (type == WindowUpdateType.Show  && _windows.ContainsKey(handle))
+            if ((type == WindowUpdateType.Show || type == WindowUpdateType.ToggleTitle) && _windows.ContainsKey(handle))
             {
                 var window = _windows[handle];
                 WindowUpdated?.Invoke(window, type);

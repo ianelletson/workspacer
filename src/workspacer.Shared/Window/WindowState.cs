@@ -10,6 +10,7 @@ namespace workspacer
     {
         Normal,
         Minimized,
-        Maximized
+        Maximized,
+        TitleHidden
     }
 }
