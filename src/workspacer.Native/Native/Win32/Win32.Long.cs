@@ -79,5 +79,7 @@ namespace workspacer
         public static WS GetWindowStyleLongPtr(IntPtr hwnd) { return (WS)GetWindowLongPtr(hwnd, GWL_STYLE); }
         public static WS_EX GetWindowExStyleLongPtr(IntPtr hwnd) { return (WS_EX)GetWindowLongPtr(hwnd, GWL_EXSTYLE); }
 
+        [DllImport("user32.dll", EntryPoint = "InvalidateRect")]
+        public static extern bool InvalidateRect(IntPtr hwnd, IntPtr lpRect, bool bErase);
     }
 }
