@@ -44,28 +44,32 @@ namespace workspacer.Shared.Layout
             int CalcHeight(int mon, int n) =>
                     (int) (mon * (_maxRows == n + 1 ? 1 : _primaryPercent + _primaryPercentOffset));
 
+            WindowLocation MinimizeWindow(int w, int h) => new WindowLocation(0, 0, w, h, WindowState.Minimized);
+
             var primaryHeight = 0;
             var remainingHeight = spaceHeight;
             var primaryHeightOffset = 0;
             var rowsAvailable = _maxRows;
             for (var i = 0; i < numInPrimary; ++i)
             {
+                if (rowsAvailable < 1)
+                {
+                    locationList.Add(MinimizeWindow(primaryWidth, primaryHeight));
+                    continue;
+                }
+
                primaryHeight = numWindows == 1 ? spaceHeight : CalcHeight(remainingHeight, i);
                remainingHeight -= primaryHeight;
                locationList.Add(new WindowLocation(0, primaryHeightOffset, primaryWidth, primaryHeight, WindowState.Normal));
                primaryHeightOffset += primaryHeight;
                --rowsAvailable;
-               if (rowsAvailable < 1)
-               {
-                   break;
-               }
             }
 
             if (rowsAvailable < 1)
             {
                 for (var i = 0; i < numInSecondary; ++i)
                 {
-                    locationList.Add(new WindowLocation(0, 0, primaryWidth, primaryHeight, WindowState.Minimized));
+                    locationList.Add(MinimizeWindow(primaryWidth, primaryHeight));
                 }
                 return locationList;
             }
