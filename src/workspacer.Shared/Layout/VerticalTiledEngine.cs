@@ -41,20 +41,26 @@ namespace workspacer.Shared.Layout
             var numInSecondary = numWindows - numInPrimary;
 			var primaryWidth = spaceWidth;
 
-            int CalcHeight(int mon, int n) => (int)(mon * (_maxRows == n + 1 ? 1 : _primaryPercent + _primaryPercentOffset));
+            int CalcHeight(int mon, int n) =>
+                    (int) (mon * (_maxRows == n + 1 ? 1 : _primaryPercent + _primaryPercentOffset));
 
             var primaryHeight = 0;
             var remainingHeight = spaceHeight;
             var primaryHeightOffset = 0;
+            var rowsAvailable = _maxRows;
             for (var i = 0; i < numInPrimary; ++i)
             {
-               primaryHeight = CalcHeight(remainingHeight, i);
+               primaryHeight = numWindows == 1 ? spaceHeight : CalcHeight(remainingHeight, i);
                remainingHeight -= primaryHeight;
                locationList.Add(new WindowLocation(0, primaryHeightOffset, primaryWidth, primaryHeight, WindowState.Normal));
                primaryHeightOffset += primaryHeight;
+               --rowsAvailable;
+               if (rowsAvailable < 1)
+               {
+                   break;
+               }
             }
 
-            var rowsAvailable = _maxRows - numInPrimary;
             if (rowsAvailable < 1)
             {
                 for (var i = 0; i < numInSecondary; ++i)
