@@ -5,7 +5,7 @@ using System.Linq;
 namespace workspacer.Shared.Layout
 {
     public class VerticalTiledEngine : ILayoutEngine
-	{
+    {
         private readonly int _numInPrimary;
         private readonly double _primaryPercent;
         private readonly double _primaryPercentIncrement;
@@ -14,20 +14,20 @@ namespace workspacer.Shared.Layout
         private int _numInPrimaryOffset;
         private double _primaryPercentOffset;
 
-		public string Name => "vertical";
+        public string Name => "vertical";
 
-		public VerticalTiledEngine(int numInPrimary, double primaryPercent, double primaryPercentIncrement, int maxRows)
-		{
-			_numInPrimary = numInPrimary;
-			_primaryPercent = primaryPercent;
-			_primaryPercentIncrement = primaryPercentIncrement;
+        public VerticalTiledEngine(int numInPrimary, double primaryPercent, double primaryPercentIncrement, int maxRows)
+        {
+            _numInPrimary = numInPrimary;
+            _primaryPercent = primaryPercent;
+            _primaryPercentIncrement = primaryPercentIncrement;
             _maxRows = maxRows;
         }
 
-		public VerticalTiledEngine() : this(1, 0.5, 0.03, 3) { }
+        public VerticalTiledEngine() : this(1, 0.5, 0.03, 3) { }
 
-		public IEnumerable<IWindowLocation> CalcLayout(IEnumerable<IWindow> windows, int spaceWidth, int spaceHeight)
-		{
+        public IEnumerable<IWindowLocation> CalcLayout(IEnumerable<IWindow> windows, int spaceWidth, int spaceHeight)
+        {
             var locationList = new List<IWindowLocation>();
             var windowList = windows.ToList();
             var numWindows = windowList.Count;
@@ -39,7 +39,7 @@ namespace workspacer.Shared.Layout
 
             var numInPrimary = Math.Min(GetNumInPrimary(), numWindows);
             var numInSecondary = numWindows - numInPrimary;
-			var primaryWidth = spaceWidth;
+            var primaryWidth = spaceWidth;
 
             int CalcHeight(int mon, int n) =>
                     (int) (mon * (_maxRows == n + 1 ? 1 : _primaryPercent + _primaryPercentOffset));
@@ -113,35 +113,35 @@ namespace workspacer.Shared.Layout
             }
 
             return locationList;
-		}
+        }
 
-		public void ShrinkPrimaryArea()
-		{
+        public void ShrinkPrimaryArea()
+        {
             _primaryPercentOffset -= _primaryPercentIncrement;
-		}
+        }
 
-		public void ExpandPrimaryArea()
-		{
+        public void ExpandPrimaryArea()
+        {
             _primaryPercentOffset += _primaryPercentIncrement;
-		}
+        }
 
-		public void ResetPrimaryArea()
-		{
+        public void ResetPrimaryArea()
+        {
             _primaryPercentOffset = 0;
-		}
+        }
 
-		public void IncrementNumInPrimary()
-		{
+        public void IncrementNumInPrimary()
+        {
             _numInPrimaryOffset++;
-		}
+        }
 
-		public void DecrementNumInPrimary()
-		{
+        public void DecrementNumInPrimary()
+        {
             if (GetNumInPrimary() > 1)
             {
                 _numInPrimaryOffset--;
             }
-		}
+        }
 
         private int GetNumInPrimary()
         {
@@ -154,5 +154,5 @@ namespace workspacer.Shared.Layout
             public int Y { get; set; }
             public int W { get; set; }
         }
-	}
+    }
 }
