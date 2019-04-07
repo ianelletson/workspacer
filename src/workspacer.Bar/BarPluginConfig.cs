@@ -16,6 +16,6 @@ namespace workspacer.Bar
         public Func<IBarWidget[]> LeftWidgets { get; set; } = () => 
             new IBarWidget[] { new WorkspaceWidget(), new TextWidget(": "), new TitleWidget() };
         public Func<IBarWidget[]> RightWidgets { get; set; } = () => 
-            new IBarWidget[] { new TimeWidget(), new ActiveLayoutWidget() };
+            new IBarWidget[] { new TimeWidget(200, "HH:mm"), new ActiveLayoutWidget() };
     }
 }
