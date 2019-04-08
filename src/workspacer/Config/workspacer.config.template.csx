@@ -5,7 +5,9 @@
 
 using System;
 using workspacer;
+using workspacer.Shared.Layout;
 using workspacer.Bar;
+using workspacer.Bar.Widgets;
 using workspacer.ActionMenu;
 using workspacer.FocusIndicator;
 
