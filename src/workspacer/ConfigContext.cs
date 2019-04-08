@@ -46,8 +46,8 @@ namespace workspacer
 
             _defaultLayouts = () => new ILayoutEngine[] {
                 new TallLayoutEngine(),
+                new VerticalTiledEngine(),
                 new FullLayoutEngine(),
-                new VerticalTiledEngine() 
             };
             _layoutProxies = new List<Func<ILayoutEngine, ILayoutEngine>>();
 
@@ -106,10 +106,7 @@ namespace workspacer
             {
                 return () => ProxyLayouts(_defaultLayouts()).ToArray();
             }
-            set
-            {
-                _defaultLayouts = value;
-            }
+            set => _defaultLayouts = value;
         }
 
         public void AddLayoutProxy(Func<ILayoutEngine, ILayoutEngine> proxy)
