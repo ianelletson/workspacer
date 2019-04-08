@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace workspacer
 {
@@ -41,12 +35,14 @@ namespace workspacer
                 var process = Process.GetProcesses().FirstOrDefault(p => p.Id == _processId);
                 _processName = process.ProcessName;
                 _processFileName = Path.GetFileName(process.MainModule.FileName);
+                ProcessDescription = process.MainModule.FileVersionInfo.FileDescription;
             }
             catch (Exception)
             {
                 _processId = -1;
-                _processName = "";
-                _processFileName = "";
+                _processName = string.Empty;
+                _processFileName = string.Empty;
+                ProcessDescription = string.Empty;
             }
         }
 
@@ -61,6 +57,8 @@ namespace workspacer
                 return buffer.ToString();
             }
         }
+
+        public string ProcessDescription { get; private set; }
 
         public IntPtr Handle => _handle;
 

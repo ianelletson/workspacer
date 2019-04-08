@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace workspacer
 {
@@ -17,6 +12,7 @@ namespace workspacer
         int ProcessId { get; }
         string ProcessFileName { get; }
         string ProcessName { get; }
+        string ProcessDescription { get; }
 
         bool CanLayout { get; }
 
