@@ -16,7 +16,7 @@ namespace workspacer
 
         private ConfigContext _context;
 
-        public async Task Start()
+        public void Start()
         {
             // init user folder
             FileHelper.EnsureUserWorkspacerPathExists();
@@ -48,7 +48,7 @@ namespace workspacer
             }
 
             // init config
-            await ConfigHelper.DoConfig(_context);
+            ConfigHelper.DoConfig(_context);
 
             // init windows
             _context.Windows.Initialize();

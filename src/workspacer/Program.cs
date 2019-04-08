@@ -1,5 +1,6 @@
 ﻿using AutoUpdaterDotNET;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace workspacer
@@ -9,7 +10,7 @@ namespace workspacer
         private static Logger Logger = Logger.Create();
 
         [STAThread]
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             Win32.SetProcessDPIAware();
 
@@ -35,12 +36,12 @@ namespace workspacer
                 AutoUpdater.Start(xmlUrl);
             }
 
-            await Run();
+            Run();
         }
 
         private static workspacer _app;
 
-        private static async Task<int> Run()
+        private static int Run()
         {
             _app = new workspacer();
 
@@ -55,7 +56,7 @@ namespace workspacer
                 });
 #endif
 
-            await _app.Start();
+            _app.Start();
             return 0;
         }
 
