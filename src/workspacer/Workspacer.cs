@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Timer = System.Timers.Timer;
 using System.Reflection;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace workspacer
@@ -15,7 +16,7 @@ namespace workspacer
 
         private ConfigContext _context;
 
-        public void Start()
+        public async Task Start()
         {
             // init user folder
             FileHelper.EnsureUserWorkspacerPathExists();
@@ -47,7 +48,7 @@ namespace workspacer
             }
 
             // init config
-            ConfigHelper.DoConfig(_context);
+            await ConfigHelper.DoConfig(_context);
 
             // init windows
             _context.Windows.Initialize();

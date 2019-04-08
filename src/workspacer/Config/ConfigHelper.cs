@@ -75,13 +75,13 @@ namespace workspacer
             return file;
         }
 
-        public static void DoConfig(IConfigContext context)
+        public static async Task DoConfig(IConfigContext context)
         {
             var config = LoadConfig();
 
             var options = ScriptOptions.Default;
             var task = CSharpScript.EvaluateAsync<Action<IConfigContext>>(config, options);
-            var func = task.Result;
+            var func = await task;
             func(context);
         }
     }
