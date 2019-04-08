@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace workspacer.Bar.Widgets
 {
-    public class TitleWidget : BarWidgetBase
+	public class TitleWidget : BarWidgetBase
     {
         public Color MonitorHasFocusColor { get; set; } = Color.Yellow;
+        public Func<string, string> TitleParser { get; set; } = title => title.Trim().Substring(0, 54);
 
         public override IBarWidgetPart[] GetParts()
         {
@@ -13,12 +15,12 @@ namespace workspacer.Bar.Widgets
             var multipleMonitors = Context.MonitorContainer.NumMonitors > 1;
             var color = isFocusedMonitor && multipleMonitors ? MonitorHasFocusColor : null;
 
-            if (window != null)
+            if (!(window is null))
             {
-                return Parts(Part(window.Title, color));
+                return Parts(Part(TitleParser(window.Title), color));
             } else
             {
-                return Parts(Part("no windows", color));
+                return Parts(Part("No Managed Windows", color));
             }
         }
 
