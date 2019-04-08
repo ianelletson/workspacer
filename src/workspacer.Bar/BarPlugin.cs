@@ -6,7 +6,7 @@ namespace workspacer.Bar
 {
     public class BarPlugin : IPlugin
     {
-        private BarPluginConfig _config;
+        private readonly BarPluginConfig _config;
 
         public BarPlugin()
         {
@@ -37,8 +37,6 @@ namespace workspacer.Bar
                     bars.Add(bar);
                 }
             }
-
-            
         }
 
         public void AfterConfig(IConfigContext context)

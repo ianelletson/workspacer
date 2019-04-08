@@ -12,12 +12,12 @@ namespace workspacer.Bar
         private IBarWidget[] _widgets;
         private IMonitor _monitor;
         private IConfigContext _configContext;
-        private int _fontSize;
+        private readonly int _fontSize;
 
-        private Color _defaultFore;
-        private Color _defaultBack;
+        private readonly Color _defaultFore;
+        private readonly Color _defaultBack;
 
-        private bool _reverse;
+        private readonly bool _reverse;
         private bool _dirty;
         private IBarWidgetContext _context;
 
@@ -45,71 +45,68 @@ namespace workspacer.Bar
 
         public void Draw()
         {
-            if (_dirty)
+            if (!_dirty) 
+                return;
+
+            var widgets = _reverse ? _widgets.Reverse().ToArray() : _widgets;
+
+            var partNumber = 0;
+            for (var i = 0; i < widgets.Length; ++i)
             {
-                var widgets = _reverse ? _widgets.Reverse().ToArray() : _widgets;
-
-                int partNumber = 0;
-                for (var i = 0; i < widgets.Length; i++)
+                var widget = widgets[i];
+                var parts = widget.GetParts();
+                for (var j = 0; j < parts.Length; ++j)
                 {
-                    var widget = widgets[i];
-                    var parts = widget.GetParts();
-                    for (var j = 0; j < parts.Length; j++)
-                    {
-                        var part = parts[j];
+                    var part = parts[j];
 
-                        if (partNumber < _panel.Controls.Count)
-                        {
-                            Label label = (Label)_panel.Controls[partNumber];
-                            SetLabel(label, part);
-                        }
-                        else
-                        {
-                            var label = AddLabel();
-                            SetLabel(label, part);
-                        }
-                        partNumber++;
-                    }
-                }
-
-                var toRemove = new List<Control>();
-                if (partNumber < _panel.Controls.Count - 1)
-                {
-                    for (var i = partNumber; i < _panel.Controls.Count; i++)
+                    if (partNumber < _panel.Controls.Count)
                     {
-                        toRemove.Add(_panel.Controls[i]);
+                        var label = (Label)_panel.Controls[partNumber];
+                        SetLabel(label, part);
                     }
+                    else
+                    {
+                        var label = AddLabel();
+                        SetLabel(label, part);
+                    }
+                    ++partNumber;
                 }
-                toRemove.ForEach(c => _panel.Controls.Remove(c));
-                _dirty = false;
             }
+
+            var toRemove = new List<Control>();
+            if (partNumber < _panel.Controls.Count - 1)
+            {
+                for (var i = partNumber; i < _panel.Controls.Count; i++)
+                {
+                    toRemove.Add(_panel.Controls[i]);
+                }
+            }
+
+            toRemove.ForEach(c => _panel.Controls.Remove(c));
+            _dirty = false;
         }
 
         private void SetLabel(Label label, IBarWidgetPart part)
         {
             label.Text = part.Text;
-            if (part.ForegroundColor != null)
-            {
-                label.ForeColor = ColorToColor(part.ForegroundColor);
-            } else
-            {
-                label.ForeColor = ColorToColor(_defaultFore);
-            }
+            label.ForeColor = ColorToColor(part.ForegroundColor ?? _defaultFore);
 
-            if (part.BackgroundColor != null && part.BackgroundColor != _defaultFore)
+            if (part.BackgroundColor is null || ColorToColor(part.BackgroundColor).Equals(label.ForeColor))
+            {
+                label.BackColor = ColorToColor(_defaultBack);
+            } 
+            else 
             {
                 label.BackColor = ColorToColor(part.BackgroundColor);
-            } else
-            {
-                label.BackColor = System.Drawing.Color.FromArgb(0, System.Drawing.Color.Black);
             }
 
-            if (part.PartClicked != null)
-            {
-                _clickedHandlers[label] = part.PartClicked;
-            } else
+            if (part.PartClicked is null)
             {
                 _clickedHandlers.Remove(label);
+            }
+            else
+            {
+                _clickedHandlers[label] = part.PartClicked;
             }
         }
 
@@ -130,7 +127,7 @@ namespace workspacer.Bar
 
         private Label AddLabel()
         {
-            Label label = new Label();
+            var label = new Label();
             _panel.Controls.Add(label);
 
             label.AutoSize = true;

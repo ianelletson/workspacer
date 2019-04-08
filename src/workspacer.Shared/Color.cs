@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace workspacer
 {
@@ -36,7 +32,7 @@ namespace workspacer
 
         public bool Equals(Color other)
         {
-            if (other == null)
+            if (other is null)
                 return false;
 
             return R == other.R &&
