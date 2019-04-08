@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 
 namespace workspacer.Bar.Widgets
 {
-	public class TitleWidget : BarWidgetBase
+    public class TitleWidget : BarWidgetBase
     {
         private int _maxLength = 54;
 
@@ -24,34 +23,36 @@ namespace workspacer.Bar.Widgets
             var multipleMonitors = Context.MonitorContainer.NumMonitors > 1;
             var color = isFocusedMonitor && multipleMonitors ? MonitorHasFocusColor : null;
 
-            if (!(window is null))
-            {
-                if (TitleCreator is null)
-                {
-                    TitleCreator = (w) =>
-                    {
-                        var pn = w.ProcessName.Trim();
-                        var wt = w.Title.Trim();
-                        var wts = wt.Substring(0, Math.Min(wt.Length, MaxLength));
-                        var incPn = !(wts.IndexOf(pn, StringComparison.InvariantCultureIgnoreCase) >= 0);
-                        var tt =
-                            $"{(incPn ? pn.Substring(0, Math.Min(pn.Length, MaxLength / 4)) + " - " : string.Empty)}{wts}";
-                        return tt.Substring(0, Math.Min(tt.Length, MaxLength));
-
-                    };
-                }
-                //var procName = window.ProcessName.Trim().Substring(0, Math.Min(window.ProcessName.Trim().Length, (int)Math.Floor(MaxLength * 0.25)));
-                //var winTitle = window.Title.Trim().Substring(0, Math.Min(window.Title.Trim().Length, (int)Math.Floor(MaxLength * 0.75)));
-                //var includeProcName = !(winTitle.IndexOf(procName, StringComparison.InvariantCultureIgnoreCase) >= 0);
-                //var procNameAppended = includeProcName ? $"{procName} - " : string.Empty;
-
-                //var titleText = $"{procNameAppended}{winTitle}";
-                return Parts(Part(TitleCreator(window), color));
-            }
-            else
+            if (window is null)
             {
                 return Parts(Part("No Managed Windows", color));
             }
+
+            if (TitleCreator is null)
+            {
+                TitleCreator = (w) =>
+                {
+                    var pn = w.ProcessName.Trim();
+                    var wt = w.Title.Trim();
+                    var wts = wt.Substring(0, Math.Min(wt.Length, MaxLength));
+                    var incPn = !(wts.IndexOf(pn, StringComparison.InvariantCultureIgnoreCase) >= 0);
+                    string titleText;
+
+                    if (incPn)
+                    {
+                        var pnSuffix = $" - {pn.Substring(0, Math.Min(pn.Length, MaxLength / 4))}";
+                        titleText = wts.Substring(0, Math.Min(wts.Length, MaxLength - pnSuffix.Length)) + pnSuffix;
+                    }
+                    else
+                    {
+                        titleText = wts;
+                    }
+
+                    return titleText;
+                };
+            }
+
+            return Parts(Part(TitleCreator(window), color));
         }
 
         public override void Initialize()
