@@ -1,12 +1,21 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 
 namespace workspacer.Bar.Widgets
 {
 	public class TitleWidget : BarWidgetBase
     {
+        private int _maxLength = 54;
+
         public Color MonitorHasFocusColor { get; set; } = Color.Yellow;
-        public Func<string, string> TitleParser { get; set; } = title => title.Trim().Substring(0, 54);
+        public Func<IWindow, string> TitleCreator { get; set; }
+
+        public int MaxLength
+        {
+            get => _maxLength;
+            set => _maxLength = value > 0 ? value : 1;
+        }
 
         public override IBarWidgetPart[] GetParts()
         {
@@ -17,8 +26,29 @@ namespace workspacer.Bar.Widgets
 
             if (!(window is null))
             {
-                return Parts(Part(TitleParser(window.Title), color));
-            } else
+                if (TitleCreator is null)
+                {
+                    TitleCreator = (w) =>
+                    {
+                        var pn = w.ProcessName.Trim();
+                        var wt = w.Title.Trim();
+                        var wts = wt.Substring(0, Math.Min(wt.Length, MaxLength));
+                        var incPn = !(wts.IndexOf(pn, StringComparison.InvariantCultureIgnoreCase) >= 0);
+                        var tt =
+                            $"{(incPn ? pn.Substring(0, Math.Min(pn.Length, MaxLength / 4)) + " - " : string.Empty)}{wts}";
+                        return tt.Substring(0, Math.Min(tt.Length, MaxLength));
+
+                    };
+                }
+                //var procName = window.ProcessName.Trim().Substring(0, Math.Min(window.ProcessName.Trim().Length, (int)Math.Floor(MaxLength * 0.25)));
+                //var winTitle = window.Title.Trim().Substring(0, Math.Min(window.Title.Trim().Length, (int)Math.Floor(MaxLength * 0.75)));
+                //var includeProcName = !(winTitle.IndexOf(procName, StringComparison.InvariantCultureIgnoreCase) >= 0);
+                //var procNameAppended = includeProcName ? $"{procName} - " : string.Empty;
+
+                //var titleText = $"{procNameAppended}{winTitle}";
+                return Parts(Part(TitleCreator(window), color));
+            }
+            else
             {
                 return Parts(Part("No Managed Windows", color));
             }
