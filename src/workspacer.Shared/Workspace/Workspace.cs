@@ -354,13 +354,13 @@ namespace workspacer
                             var window = windows[i];
                             var loc = locations[i];
 
-                            var adjustedLoc = new WindowLocation(loc.X + monitor.X, loc.Y + monitor.Y, 
+                            var adjustedLoc = new WindowLocation(loc.X + monitor.X, loc.Y + monitor.Y,
                                 loc.Width, loc.Height, loc.State);
 
                             if (!window.IsMouseMoving)
                             {
                                 handle.DeferWindowPos(window, adjustedLoc);
-                            } 
+                            }
                         }
                     }
                 }
@@ -377,7 +377,18 @@ namespace workspacer
 
         private List<IWindow> GetWindowsForLayout()
         {
-            return this.Windows.Where(w => w.CanLayout).ToList();
+            // Iterating over a for loop like this accounts for cases where Windows changes during enumeration
+            var windowList = Windows.ToList();
+            var windowsForLayout = new List<IWindow>();
+            for (var i = windowList.Count - 1; i >= 0; --i)
+            {
+                if (windowList[i].CanLayout)
+                {
+                    windowsForLayout.Add(windowList[i]);
+                }
+            }
+
+            return windowsForLayout;
         }
 
         public override string ToString()
